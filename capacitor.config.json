@@ -1,0 +1,8 @@
+{
+  "appId": "com.overtime.clock",
+  "appName": "HR assist",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

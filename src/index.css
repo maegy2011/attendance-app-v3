@@ -1,0 +1,443 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --color-money: #059669;
+  --color-vacation: #d97706;
+  --color-alert: #dc2626;
+  --color-info: #2563eb;
+  --color-neutral: #64748b;
+}
+html { background: #ffffff; }
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f1f5f9; min-height: 100vh; }
+
+/* تباين النصوص الثانوية */
+.text-slate-400 { color: #64748b !important; }
+
+/* حواف جدول السجلات ربع دايرة + تضييق داخلي */
+.records-table-card { border-radius: 16px; overflow: hidden; padding: 6px !important; }
+.records-table-card .overflow-x-auto { border-radius: 12px; }
+.records-table-card tbody tr:last-child td:first-child { border-bottom-right-radius: 12px; }
+.records-table-card tbody tr:last-child td:last-child { border-bottom-left-radius: 12px; }
+
+.dialog-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; padding: 16px;
+}
+.dialog-box {
+  background: white; border-radius: 16px; padding: 20px;
+  width: 100%; max-width: 380px; max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.card {
+  background: white; border-radius: 16px; padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.btn {
+  padding: 10px 16px; border-radius: 12px; font-weight: 700;
+  font-size: 14px; cursor: pointer; transition: all 0.2s;
+  border: none; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: #2563eb; color: white; }
+.home-header { background:linear-gradient(to bottom right,#1e40af,#2563eb); }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-success { background: #16a34a; color: white; }
+.btn-success:hover { background: #15803d; }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-outline { background: white; color: #475569; border: 2px solid #e2e8f0; }
+.btn-outline:hover { border-color: #94a3b8; }
+.btn-warning { background: #f59e0b; color: white; }
+
+.input-group { margin-bottom: 12px; }
+.input-group label { display: block; font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 4px; }
+.input-group input, .input-group select, .input-group textarea {
+  width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0;
+  border-radius: 10px; font-size: 16px; outline: none; transition: border-color 0.2s; /* التعديل ١: 16px يمنع زوم الموبايل */
+}
+.input-group input:focus, .input-group select:focus, .textarea:focus { border-color: #2563eb; }
+
+.toast-container { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 200; }
+.toast {
+  background: #1e293b; color: white; padding: 10px 20px; border-radius: 10px;
+  font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  animation: slideDown 0.3s ease;
+}
+@keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Bottom nav */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; display: flex; z-index: 50; padding-bottom: env(safe-area-inset-bottom); }
+/* التعديل ١ (دورة ثالثة): التدرج للآخر — شريط الأيقونات شفاف فوق التدرج (ثيم Classic Gradient فقط) */
+[data-apptheme="classic-gradient"] .bottom-nav { background: transparent; border-top-color: rgba(226,232,240,.6); }
+.bottom-nav a { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; padding: 8px 4px; font-size: 10px; font-weight: 600; color: #94a3b8; text-decoration: none; transition: color 0.2s; }
+.bottom-nav a.active { color: #2563eb; }
+/* التعديل ٨: الشريط يتكيف مع أي عرض — الأيقونة ثابتة والليبل ينكمش بنقط */
+.bottom-nav a .nav-icon { font-size: 20px; flex-shrink: 0; }
+.bottom-nav a .nav-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+@media (max-width: 360px) {
+  .bottom-nav a { font-size: 9px; padding: 6px 2px; }
+  .bottom-nav a .nav-icon { font-size: 17px; }
+}
+/* التعديل ٩: الحوارات تصغر تلقائيًا على الشاشات الضيقة (بدون !important — specificity أعلى من utilities) */
+@media (max-width: 380px) {
+  .dialog-overlay { padding: 10px; }
+  .dialog-box { padding: 16px; border-radius: 14px; max-height: 94vh; }
+  .dialog-box input[type="password"] { font-size: 1.25rem; padding: 12px; }
+  .dialog-box .text-4xl { font-size: 1.875rem; line-height: 2.25rem; }
+}
+.page-content { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+/* v12.5.12 تعديل ٣: خانة الإضافي — لونها حسب الثيم */
+.extra-box { background:#eff6ff; border:1px solid #dbeafe; border-radius:0.75rem; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.extra-box .extra-title { color:#2563eb; font-size:0.75rem; font-weight:700; }
+.extra-box .extra-value { color:#1d4ed8; font-weight:800; font-size:1.5rem; line-height:1; margin-top:0.25rem; }
+/* v12.8.3 (التعديل ١٨): كروت الرئيسية الصغيرة تتلون مع الزمردي/الماتبلو */
+[data-apptheme="emerald"] .extra-box { background:#ecfdf5; border-color:#bbe7d2; }
+[data-apptheme="emerald"] .extra-box .extra-title { color:#059669; }
+[data-apptheme="emerald"] .extra-box .extra-value { color:#047857; }
+[data-apptheme="matblue"] .extra-box .extra-title { color:#1A73E8; }
+[data-apptheme="matblue"] .extra-box .extra-value { color:#1765cc; }
+/* v12.5.11: هامش أمان سفلي لأزرار النوافذ المنبثقة (فوق بار النظام) */
+.safe-footer { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important; }
+
+/* v12.8.6: إنزال الهيدرات شوية لتحت النوتش — الـ inset مرة واحدة على الصفحة فقط (كان متضاعف) */
+.page-content { padding-top: env(safe-area-inset-top, 0px); }
+.page-content { background: #ffffff; }
+/* v12.11.15 — التصليح: الرئيسية شفافة عشان تدرج الجسم يبان (باقي الصفحات بيضا) */
+/* v12.11.19 — التصليح: اللوحة تبدأ من أول الشاشة والتدرج يغطي النوتش (المحتوى محمي بمسافة التوبرو) */
+.page-content:has(.claw-home) { background: transparent; padding-top: 0; }
+.hd-home, .hd-records, .hd-vac, .hd-perm, .hd-alt, .hd-stats, .hd-set, .hd-dhikr, .home-header, .record-header {
+  margin-top: 5px !important;
+}
+.toast-container { top: calc(env(safe-area-inset-top, 0px) + 16px); }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 0.28s ease-out; }
+
+
+/* ===== 🌍 تعميم الثيمات على كل حاجة (v12.3.7 — بند 9) ===== */
+/* --- الهيدرات المتدرجة (from-blue-800 to-blue-600 في كل الصفحات) --- */
+
+/* --- الأزرار الدلالية (حفظ/حذف/تحذير) حسب الثيم --- */
+
+/* --- الحالات المحددة (tabs/nav/badges) حسب الثيم --- */
+
+/* --- المبالغ الخضرا حسب الثيم --- */
+
+/* --- عناصر جدول السجلات (selects + أزرار التسجيل) حسب الثيم --- */
+
+/* ===== 🌍 كل الألوان الثابتة تابعة للثيمات (v12.3.9) ===== */
+/* --- هيدرات الإجازات/التصاريح/البديلة (violet/indigo/teal) --- */
+/* --- كروت أنواع اليوم في الرئيسية --- */
+/* --- كروت الملخصات الملونة (إجازات/تصاريح) --- */
+/* --- حدود الكروت الملونة --- */
+/* --- النصوص الملونة (ملخصات + شارات) --- */
+/* --- الشارات والأزرار الصلبة (نوافذ + بديلة) --- */
+
+/* --- 2. emerald زمردي (v12.5.1) --- */
+
+/* --- 3. matblue — Google Material Blue (v12.5.2) --- */
+
+/* --- 4. telegram — Telegram Sky (v12.5.2) --- */
+
+/* --- 5. bluefam — عيلة الأزرق 🌊 (v12.7.4: الحاجات اللي ملهاش مفاتيح تابعة للثيم) --- */
+/* تعديل ٢ (v12.6.12): محرر الألوان — تطبيق المتغيرات */
+/* تعديل ١+٢ (v12.7.1): توسيع المحرر — الزراير + الشارات + الهيدر + النشط + التوست */
+/* v12.7.3: خلفية البرنامج بيضا ثابتة (مفتاح pagebg ملغي) */
+body { background-color: #ffffff !important; }
+.card { background:linear-gradient(to bottom,color-mix(in srgb,var(--c-cardbg,#ffffff) 85%,white),color-mix(in srgb,var(--c-cardbg,#ffffff) 68%,white))!important; }
+.home-header { background: var(--c-homehd,#2563eb) !important; }
+.bottom-nav { background:linear-gradient(to bottom,color-mix(in srgb,var(--c-navbg,#ffffff) 85%,white),color-mix(in srgb,var(--c-navbg,#ffffff) 68%,white))!important; }
+/* v12.7.3: نص التنقل + النشط سودا ثابتين (مفتاحا navtx/navactive ملغيان) */
+.bottom-nav a { color: #000 !important; }
+.bottom-nav a.active { color: #000 !important; }
+.btn-primary { background:linear-gradient(to bottom,color-mix(in srgb,var(--c-btnprim,#2563eb) 85%,white),color-mix(in srgb,var(--c-btnprim,#2563eb) 68%,white))!important; }
+.btn-success { background:linear-gradient(to bottom,color-mix(in srgb,var(--c-btnsucc,#16a34a) 85%,white),color-mix(in srgb,var(--c-btnsucc,#16a34a) 68%,white))!important; }
+.btn-danger { background:linear-gradient(to bottom,color-mix(in srgb,var(--c-btndang,#dc2626) 85%,white),color-mix(in srgb,var(--c-btndang,#dc2626) 68%,white))!important; }
+.btn-warning { background:linear-gradient(to bottom,color-mix(in srgb,var(--c-btnwarn,#f59e0b) 85%,white),color-mix(in srgb,var(--c-btnwarn,#f59e0b) 68%,white))!important; }
+/* v12.7.3: خلفية التوست سودا ثابتة (مفتاح toastbg ملغي) */
+.toast { background-color: #000 !important; }
+.record-header { background: linear-gradient(to bottom right, var(--c-recordhd1, #1e40af), var(--c-recordhd2, #2563eb)) !important; }
+.ctable .bg-slate-100 { background-color: var(--c-pillbg, #f1f5f9) !important; }
+.ctable .bg-slate-200 { background-color: var(--c-pillbg, #f1f5f9) !important; }
+.ctable .bg-blue-100 { background-color: var(--c-pillblue, #dbeafe) !important; }
+.ctable .bg-white { background-color: var(--c-cellbg, #ffffff) !important; }
+.ctable { border-collapse: collapse; }
+.ctable thead th { background:linear-gradient(to bottom,color-mix(in srgb,var(--c-thbg,#dbeafe) 85%,white),color-mix(in srgb,var(--c-thbg,#dbeafe) 68%,white))!important; color: var(--c-thtext,#ffffff) !important; }
+.ctable tbody tr.ct-even td { background-color: var(--c-roweven,#ffffff); }
+.ctable tbody tr.ct-odd td { background-color: var(--c-rowodd,#f1f5f9); }
+.ctable tbody td.ccell { background-color: var(--c-cellbg,#ffffff) !important; }
+.ctable tbody td { border: 1px solid var(--c-cellbd,#e2e8f0); }
+/* ===== v12.7.2: نظام التفتيح الكامل — الهيدر يحرك كل حاجة ===== */
+/* fallback أولاً (متصفحات قديمة) ثم color-mix */
+.hd-home,.hd-records,.hd-vac,.hd-perm,.hd-alt,.hd-stats,.hd-set,.hd-dhikr{color:var(--c-hdtext,#fff)!important;}
+.hd-home h1,.hd-home p,.hd-home span,.hd-records h1,.hd-records span,.hd-vac h1,.hd-vac p,.hd-perm h1,.hd-alt h1,.hd-stats h1,.hd-set h1,.hd-dhikr p{color:var(--c-hdtext,#fff)!important;}
+.hd-home{background:var(--c-hd_home,#2563eb)!important;background:linear-gradient(to bottom right,var(--c-hd_home,#2563eb),color-mix(in srgb,var(--c-hd_home,#2563eb) 60%,white))!important;}
+.hd-records{background:var(--c-hd_records,#1e40af)!important;background:linear-gradient(to bottom right,var(--c-hd_records,#1e40af),color-mix(in srgb,var(--c-hd_records,#1e40af) 60%,white))!important;}
+.hd-vac{background:var(--c-hd_vac,#d97706)!important;background:linear-gradient(to bottom right,var(--c-hd_vac,#d97706),color-mix(in srgb,var(--c-hd_vac,#d97706) 60%,white))!important;}
+.hd-perm{background:var(--c-hd_perm,#4338ca)!important;background:linear-gradient(to bottom right,var(--c-hd_perm,#4338ca),color-mix(in srgb,var(--c-hd_perm,#4338ca) 60%,white))!important;}
+.hd-alt{background:var(--c-hd_alt,#0f766e)!important;background:linear-gradient(to bottom right,var(--c-hd_alt,#0f766e),color-mix(in srgb,var(--c-hd_alt,#0f766e) 60%,white))!important;}
+.hd-stats{background:var(--c-hd_stats,#047857)!important;background:linear-gradient(to bottom right,var(--c-hd_stats,#047857),color-mix(in srgb,var(--c-hd_stats,#047857) 60%,white))!important;}
+.hd-set{background:var(--c-hd_set,#334155)!important;background:linear-gradient(to bottom right,var(--c-hd_set,#334155),color-mix(in srgb,var(--c-hd_set,#334155) 60%,white))!important;}
+.hd-dhikr{background:var(--c-hd_dhikr,#047857)!important;background:linear-gradient(to bottom right,var(--c-hd_dhikr,#047857),color-mix(in srgb,var(--c-hd_dhikr,#047857) 60%,white))!important;}
+/* هيدر الجدول = أفتح درجة من هيدر صفحته */
+.page-records .ctable thead th{background:var(--c-hd_records,#1e40af)!important;background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_records,#1e40af) 85%,white),color-mix(in srgb,var(--c-hd_records,#1e40af) 68%,white))!important;color:var(--c-hdtext,#fff)!important;}
+.page-vac .ctable thead th{background:var(--c-hd_vac,#d97706)!important;background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_vac,#d97706) 85%,white),color-mix(in srgb,var(--c-hd_vac,#d97706) 68%,white))!important;color:var(--c-hdtext,#fff)!important;}
+.page-perm .ctable thead th{background:var(--c-hd_perm,#4338ca)!important;background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_perm,#4338ca) 85%,white),color-mix(in srgb,var(--c-hd_perm,#4338ca) 68%,white))!important;color:var(--c-hdtext,#fff)!important;}
+.page-alt .ctable thead th{background:var(--c-hd_alt,#0f766e)!important;background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_alt,#0f766e) 85%,white),color-mix(in srgb,var(--c-hd_alt,#0f766e) 68%,white))!important;color:var(--c-hdtext,#fff)!important;}
+.page-stats .ctable thead th{background:var(--c-hd_stats,#047857)!important;background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_stats,#047857) 85%,white),color-mix(in srgb,var(--c-hd_stats,#047857) 68%,white))!important;color:var(--c-hdtext,#fff)!important;}
+/* زيبرا: أبيض / مشتق 10% — النص أسود ثابت */
+.page-records .ctable tbody tr:nth-child(even) td,.page-vac .ctable tbody tr:nth-child(even) td,.page-perm .ctable tbody tr:nth-child(even) td,.page-alt .ctable tbody tr:nth-child(even) td,.page-stats .ctable tbody tr:nth-child(even) td{background-color:#fff!important;color:#000!important;}
+.page-records .ctable tbody tr:nth-child(odd) td{background-color:var(--c-hd_records,#1e40af)!important;background-color:color-mix(in srgb,var(--c-hd_records,#1e40af) 10%,white)!important;color:#000!important;}
+.page-vac .ctable tbody tr:nth-child(odd) td{background-color:var(--c-hd_vac,#d97706)!important;background-color:color-mix(in srgb,var(--c-hd_vac,#d97706) 10%,white)!important;color:#000!important;}
+.page-perm .ctable tbody tr:nth-child(odd) td{background-color:var(--c-hd_perm,#4338ca)!important;background-color:color-mix(in srgb,var(--c-hd_perm,#4338ca) 10%,white)!important;color:#000!important;}
+.page-alt .ctable tbody tr:nth-child(odd) td{background-color:var(--c-hd_alt,#0f766e)!important;background-color:color-mix(in srgb,var(--c-hd_alt,#0f766e) 10%,white)!important;color:#000!important;}
+.page-stats .ctable tbody tr:nth-child(odd) td{background-color:var(--c-hd_stats,#047857)!important;background-color:color-mix(in srgb,var(--c-hd_stats,#047857) 10%,white)!important;color:#000!important;}
+/* v12.7.15: نوع الجدول (ts) — أبيض كله / الغامق كله — لكل صفحة */
+/* خانات أول 3 أعمدة: مشتق 22% + خط أسود + حد ثابت */
+.page-records .ctable select{background-color:var(--c-hd_records,#1e40af)!important;background-color:color-mix(in srgb,var(--c-hd_records,#1e40af) 32%,white)!important;color:#000!important;border:2px solid var(--c-hd_records,#1e40af)!important;border:2px solid color-mix(in srgb,var(--c-hd_records,#1e40af) 60%,white)!important;text-align:center;text-align-last:center;}
+.page-vac .ctable select{background-color:var(--c-hd_vac,#d97706)!important;background-color:color-mix(in srgb,var(--c-hd_vac,#d97706) 32%,white)!important;color:#000!important;border:2px solid var(--c-hd_vac,#d97706)!important;border:2px solid color-mix(in srgb,var(--c-hd_vac,#d97706) 60%,white)!important;text-align:center;text-align-last:center;}
+.page-perm .ctable select{background-color:var(--c-hd_perm,#4338ca)!important;background-color:color-mix(in srgb,var(--c-hd_perm,#4338ca) 32%,white)!important;color:#000!important;border:2px solid var(--c-hd_perm,#4338ca)!important;border:2px solid color-mix(in srgb,var(--c-hd_perm,#4338ca) 60%,white)!important;text-align:center;text-align-last:center;}
+.page-alt .ctable select{background-color:var(--c-hd_alt,#0f766e)!important;background-color:color-mix(in srgb,var(--c-hd_alt,#0f766e) 32%,white)!important;color:#000!important;border:2px solid var(--c-hd_alt,#0f766e)!important;border:2px solid color-mix(in srgb,var(--c-hd_alt,#0f766e) 60%,white)!important;text-align:center;text-align-last:center;}
+.page-stats .ctable select{background-color:var(--c-hd_stats,#047857)!important;background-color:color-mix(in srgb,var(--c-hd_stats,#047857) 32%,white)!important;color:#000!important;border:2px solid var(--c-hd_stats,#047857)!important;border:2px solid color-mix(in srgb,var(--c-hd_stats,#047857) 60%,white)!important;text-align:center;text-align-last:center;}
+.page-records .ctable select option,.page-vac .ctable select option,.page-perm .ctable select option,.page-alt .ctable select option,.page-stats .ctable select option{color:#000;}
+/* الشبكة ثابتة + إطار اليوم غامق من الهيدر تلقائياً */
+.page-records .ctable tbody td,.page-vac .ctable tbody td,.page-perm .ctable tbody td,.page-alt .ctable tbody td,.page-stats .ctable tbody td{border:1px solid #e2e8f0!important;}
+/* ===== v12.7.5: برواز النهاردة الموحد 3px + فواصل داخلية فاتحة + طول موحد ===== */
+/* التعديل 23 نقطة 5: سطر الصفر في جدول التأخيرات — كله أحمر (يغلب الزيبرا) */
+.tardy-zero-row td{background-color:#fee2e2!important;color:#b91c1c!important;font-weight:700;}
+/* ===== التعديل ٣: خلايا عمود نوع الإجازة — لون هيدر لكل قيمة (نص أبيض) ===== */
+.dcc-present{background:linear-gradient(to bottom right,var(--c-hd_records,#1e40af),color-mix(in srgb,var(--c-hd_records,#1e40af) 60%,white))!important;color:#fff!important;border-color:transparent!important;}
+.dcc-regular_vacation{background:linear-gradient(to bottom right,var(--c-hd_vac,#d97706),color-mix(in srgb,var(--c-hd_vac,#d97706) 60%,white))!important;color:#fff!important;border-color:transparent!important;}
+.dcc-rest_day{background:linear-gradient(to bottom right,var(--c-hd_alt,#0f766e),color-mix(in srgb,var(--c-hd_alt,#0f766e) 60%,white))!important;color:#fff!important;border-color:transparent!important;}
+.dcc-sick{background:linear-gradient(to bottom right,var(--c-hd_perm,#4338ca),color-mix(in srgb,var(--c-hd_perm,#4338ca) 60%,white))!important;color:#fff!important;border-color:transparent!important;}
+.dcc-unpaid{background:linear-gradient(to bottom right,#dc2626,color-mix(in srgb,#dc2626 60%,white))!important;color:#fff!important;border-color:transparent!important;}
+.dcc-special{background:linear-gradient(to bottom right,var(--c-hd_stats,#047857),color-mix(in srgb,var(--c-hd_stats,#047857) 60%,white))!important;color:#fff!important;border-color:transparent!important;}
+.dcc-weekend_rest{background:linear-gradient(to bottom right,#64748b,color-mix(in srgb,#64748b 60%,white))!important;color:#fff!important;border-color:transparent!important;}
+/* ===== التعديل ٤: خلايا حالة اليوم — الهيدر مخفف 25% للكل (نص أبيض) ===== */
+.dst-all{background:linear-gradient(to bottom right,color-mix(in srgb,var(--c-hd_records,#1e40af) 75%,white),color-mix(in srgb,var(--c-hd_records,#1e40af) 45%,white))!important;color:#fff!important;border-color:transparent!important;}
+/* ===== التعديل ٨: ثيم Classic Gradient — خلفية كل صفحة تدرج من لون هيدرها (خفيف 18% ← أبيض) ===== */
+/* يشتغل فقط مع data-apptheme="classic-gradient" — باقي الثيمات خلفية بيضا — full-bleed بلا حساب النوتش */
+[data-apptheme="classic-gradient"] .page-home{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_home,#2563eb) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+[data-apptheme="classic-gradient"] .page-records{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_records,#1e40af) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+[data-apptheme="classic-gradient"] .page-vac{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_vac,#d97706) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+[data-apptheme="classic-gradient"] .page-perm{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_perm,#4338ca) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+[data-apptheme="classic-gradient"] .page-alt{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_alt,#0f766e) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+[data-apptheme="classic-gradient"] .page-stats{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_stats,#047857) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+[data-apptheme="classic-gradient"] .page-set{background:linear-gradient(to bottom,var(--c-hd_set,#2C5F8A),#ffffff);min-height:100dvh;padding-top:calc(env(safe-area-inset-top,0px) + 8px);}
+/* ===== إصلاح التعديل ١: التدرج على الغلاف نفسه (حشو الأمان العلوي متلون — بلا أبيض) ===== */
+[data-apptheme="classic-gradient"] .page-content:has(.page-home){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_home,#2563eb) 40%,white) 0%,#ffffff 85%),#ffffff;}
+[data-apptheme="classic-gradient"] .page-content:has(.page-records){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_records,#1e40af) 40%,white) 0%,#ffffff 85%),#ffffff;}
+[data-apptheme="classic-gradient"] .page-content:has(.page-vac){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_vac,#d97706) 40%,white) 0%,#ffffff 85%),#ffffff;}
+[data-apptheme="classic-gradient"] .page-content:has(.page-perm){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_perm,#4338ca) 40%,white) 0%,#ffffff 85%),#ffffff;}
+[data-apptheme="classic-gradient"] .page-content:has(.page-alt){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_alt,#0f766e) 40%,white) 0%,#ffffff 85%),#ffffff;}
+[data-apptheme="classic-gradient"] .page-content:has(.page-stats){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_stats,#047857) 40%,white) 0%,#ffffff 85%),#ffffff;}
+[data-apptheme="classic-gradient"] /* v12.11.23 تعديل 9: طفي التدرج الفاتح — الصفحة تملك تدرج واحد + شفاف فوق النوتش زي claw-home */
+.page-content:has(.page-set){background:transparent;padding-top:0;}
+/* ===== التعديل ٥: خلايا الوردية — الهيدر مخفف 50% للكل (نص أبيض) ===== */
+.dsh-all{background:linear-gradient(to bottom right,color-mix(in srgb,var(--c-hd_records,#1e40af) 50%,white),color-mix(in srgb,var(--c-hd_records,#1e40af) 30%,white))!important;color:#fff!important;border-color:transparent!important;}
+/* ===== التعديل ٦: زرار الاختيار جوه خانات الرئيسية — أفتح 50% من الخانة (نص أبيض) ===== */
+.ctable tbody td{height:46px;vertical-align:middle;}
+/* ===== v12.7.8: تبويبات الهيدر 🗂️ + ارتفاع موحد 46px ===== */
+.page-records .ctable thead th{height:46px;vertical-align:middle;}
+/* الأحدث والفلتر: مفتاح واحد + خط أسود ثابت */
+.sortfilter{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-sortfilterbg,#f1f5f9) 85%,white),color-mix(in srgb,var(--c-sortfilterbg,#f1f5f9) 68%,white))!important;color:#000!important;}
+/* كروت الرئيسية: خلفية + خط واحد */
+.homecard{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-homecardbg,#7c3aed) 85%,white),color-mix(in srgb,var(--c-homecardbg,#7c3aed) 68%,white))!important;border-color:var(--c-homecardbg,#7c3aed)!important;border-color:color-mix(in srgb,var(--c-homecardbg,#7c3aed) 75%,black)!important;}
+.homecard div,.homecard span{color:var(--c-homecardtx,#fff)!important;}
+/* القيم */
+.val-money{color:var(--c-val_money,#16a34a)!important;}
+.val-in{color:var(--c-val_in,#16a34a)!important;}
+.val-out{color:var(--c-val_out,#dc2626)!important;}
+/* v12.7.3: الفارغ أسود ثابت (مفتاح val_muted ملغي) */
+.val-muted{color:#000!important;}
+
+
+/* ===== تعديل ٨ (v12.5.13): كل الألوان من الثيم — إلغاء الألوان الثابتة والدلالية ===== */
+/* التعديل ٢ (دورة رابعة): دواير الحضور/الانصراف — أخضر/أحمر 3 درجات (نص أسود على الفاتح) */
+/* التعديل ٢ (دورة سادسة): زرار الخانة يقرا لونه من متغير الكارت --hb */
+.hvb-live{background:var(--hb,#fff);color:#000;border-color:#cbd5e1;}
+/* التعديل ١٠ (دورة سادسة): خلفية متدرجة 40%→85% + شريط شفاف لكل ثيمات البرامج (نفس تفاصيل ثيم 6 — كل ثيم بلون هيدره) */
+.page-home{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_home,#2563eb) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+.page-records{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_records,#1e40af) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+.page-vac{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_vac,#d97706) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+.page-perm{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_perm,#4338ca) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+.page-alt{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_alt,#0f766e) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+.page-stats{background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_stats,#047857) 40%,white) 0%,#ffffff 85%),#ffffff;min-height:100dvh;}
+.page-set{background:linear-gradient(to bottom,var(--c-hd_set,#2C5F8A),#ffffff);min-height:100dvh;padding-top:calc(env(safe-area-inset-top,0px) + 8px);}
+.page-content:has(.page-home){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_home,#2563eb) 40%,white) 0%,#ffffff 85%),#ffffff;}
+.page-content:has(.page-records){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_records,#1e40af) 40%,white) 0%,#ffffff 85%),#ffffff;}
+.page-content:has(.page-vac){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_vac,#d97706) 40%,white) 0%,#ffffff 85%),#ffffff;}
+.page-content:has(.page-perm){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_perm,#4338ca) 40%,white) 0%,#ffffff 85%),#ffffff;}
+.page-content:has(.page-alt){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_alt,#0f766e) 40%,white) 0%,#ffffff 85%),#ffffff;}
+.page-content:has(.page-stats){background:linear-gradient(to bottom,color-mix(in srgb,var(--c-hd_stats,#047857) 40%,white) 0%,#ffffff 85%),#ffffff;}
+/* v12.11.23 تعديل 9: طفي التدرج الفاتح — الصفحة تملك تدرج واحد + شفاف فوق النوتش زي claw-home */
+.page-content:has(.page-set){background:transparent;padding-top:0;}
+.bottom-nav{background:transparent!important;border-top-color:rgba(226,232,240,.6)!important;}
+/* التعديل ١٥ (دورة سادسة): البار السفلي أبيض مدمج — رجوع عن الشفاف + على اد الأيقونات */
+.bottom-nav{background:#ffffff!important;border-top-color:#e2e8f0!important;}
+.bottom-nav a{padding:4px 4px!important;}
+/* التعديل ١٩ (دورة سادسة): حصر مقاس الأيقونة على أول span — الليبل 9px رجع (كان الـ!important بيبلعه) */
+.bottom-nav a > span:first-child{font-size:18px!important;}
+
+/* ===== v12.9.48: الشاشة الرئيسية الجديدة (تصميم الصورة — عربي RTL) ===== */
+/* الخلفية رمادي فاتح زي الصورة + مرنة لأي شاشة */
+.claw-home{background:linear-gradient(to bottom,var(--c-hd_home,#4EBBCA),#ffffff);min-height:100dvh;padding:0 14px calc(110px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto;}
+.claw-toprow{display:flex;align-items:center;justify-content:space-between;margin-top:calc(env(safe-area-inset-top,0px) + 4px);}
+.claw-greet{font-size:17px;font-weight:800;color:#fff;}
+/* التعديل ٢٨: الصورة الشخصية — دائرة 64px أقصى الشمال */
+.claw-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.12);flex-shrink:0;}
+.claw-topicons{display:flex;align-items:center;gap:8px;}
+.claw-iconbtn{position:relative;width:38px;height:38px;border-radius:12px;background:#fff;color:#0F172A;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.07);border:none;cursor:pointer;}
+.claw-badge{position:absolute;top:-5px;left:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#dc2626;color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+/* v12.11.26 (5): الصف كله نفس الارتفاع — الأزرار تتمدد قد شريط البحث */
+/* v12.11.30 (سادس): الترحيب ← البحث 7 */
+.claw-searchrow{display:flex;align-items:stretch;gap:8px;margin-top:7px;}
+/* v12.11.29 (تاني): الخانات 40×40 */
+.claw-searchrow .claw-iconbtn{height:auto;min-height:40px;min-width:40px;}
+/* v12.11.26 (6+8): صف الملاحظات مراية صف البحث + شريط الملاحظة */
+/* v12.11.30 (سادس): الخانات ← الشريط 14 */
+.claw-noterow{display:flex;align-items:stretch;gap:8px;margin-top:14px;}
+.claw-noterow .claw-iconbtn{height:auto;min-height:40px;min-width:40px;}
+.claw-notebar{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.06);min-width:0;border:none;cursor:pointer;text-align:right;}
+.claw-notebartext{flex:1;font-size:13px;font-weight:700;color:#1D80CC;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.claw-notebartext.claw-empty{color:#94A3B8;}
+/* v12.11.29 (تاني): الشريط 40 — التخفيض من الحشوة */
+.claw-search{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:8px 12px;box-shadow:0 2px 8px rgba(0,0,0,.06);min-width:0;}
+.claw-searchbtn{background:none;border:none;font-size:16px;cursor:pointer;padding:0;display:flex;}
+.claw-searchinput{flex:1;border:none;outline:none;background:transparent;font-size:13px;color:#0F172A;min-width:0;}
+.claw-searchinput::placeholder{color:#94A3B8;}
+.claw-section{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 8px;}
+/* v12.11.20 تعديل 1: عناوين الرئيسية بيضا */
+.claw-sectiontitle{font-size:15px;font-weight:800;color:#fff;}
+.claw-all{background:none;border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:2px;}
+.claw-arrow{font-size:16px;font-weight:900;line-height:1;}
+/* الكارت الأزرق — تدرج claw من الصورة (أزرق يمين ← تركوازي شمال) v12.9.49 */
+.claw-card{background:linear-gradient(to left,#1D80CC 0%,#2596BE 48%,#35B5A6 100%);border-radius:22px;padding:14px;box-shadow:0 8px 24px rgba(24,128,200,.30);color:#fff;}
+.claw-cardtop{display:flex;align-items:center;justify-content:space-between;}
+.claw-clock{font-size:15px;font-weight:800;color:#fff;}
+/* v12.11.26 (4): التاريخ قد الساعة */
+/* v12.11.35 (بند 2): التاريخ 15 قد الساعة */
+.claw-date{font-size:15px;font-weight:800;color:#E0F0F0;}
+.claw-status{font-size:13px;font-weight:700;color:#fff;margin-top:6px;text-align:center;}
+.claw-dhikr{font-size:12px;font-weight:700;color:#fff;text-align:center;margin-top:2px;}
+.claw-hamd{font-size:15px;font-weight:800;color:#fff;}
+.claw-times{display:flex;gap:8px;margin-top:10px;}
+.claw-extraline{background:transparent;border:none;width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;}
+.claw-extralabel{font-size:12px;font-weight:700;color:#fff;}
+.claw-extraval{font-size:14px;font-weight:800;color:#fff;}
+.claw-timebox{flex:1;background:#fff;border:none;border-radius:14px;padding:6px 10px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.10);min-width:0;}
+.claw-timelabel{font-size:11px;font-weight:700;color:#1D80CC;}
+.claw-timeval{font-size:17px;font-weight:800;color:#0F172A;}
+.claw-tmarrow{font-size:16px;font-weight:900;color:#1D80CC;line-height:1;}
+.claw-extrabox{background:#E0F0F0;}
+.claw-dim{opacity:.55;}
+.claw-leavebox{background:#fff;border-radius:14px;padding:10px;margin-top:10px;text-align:center;}
+.claw-leavename{font-size:14px;font-weight:800;color:#0F172A;}
+.claw-leaveinfo{font-size:12px;font-weight:700;color:#1880C8;margin-top:2px;}
+/* v12.11.26 (7): 3 خانات صف واحد متوسط + أعرض للمحتوى */
+/* v12.11.27: توسط بأبعاد متساوية — نفس العرض والارتفاع */
+/* v12.11.29 (أول): عرض ثابت 95 + أمان الشاشات الصغيرة */
+/* v12.11.30 (خامس): المربع 80 — صف واحد سيمترية واحدة مسافات متساوية */
+/* v12.11.31 (سابع): الخلية رمز + اسم بس 65×55 — من غير سهم */
+/* v12.11.34 (تعديل 1): عرض ثابت 55 + من غير حشوة جوانب */
+/* v12.11.36 (بند 1+2): السطر المرن — flex يتوسط 3/4/5 + سكرول عند 6+ */
+/* v12.11.42 (بند 1): توزيع متساوي على السطر كله — السكرول يرجع بداية + 8 */
+.claw-grid4{display:flex;gap:0;justify-content:space-evenly;align-items:stretch;overflow-x:auto;padding:4px 2px;scrollbar-width:none;}
+.claw-grid4::-webkit-scrollbar{display:none;}
+.claw-grid4.is-scroll{justify-content:flex-start;gap:8px;}
+.claw-grid4 .claw-cell{width:55px;min-width:55px;max-width:55px;flex:0 0 55px;}
+/* v12.11.36 (بند 3+5): مبدئي برتقالي + نهائي تركوازي — الرقم أبيض */
+.claw-provis{background:linear-gradient(to bottom,#FB923C,#EA580C)!important;}
+.claw-final{background:linear-gradient(to bottom,#2DD4BF,#0D9488)!important;}
+.claw-provis .claw-cellabel,.claw-final .claw-cellabel{color:#fff!important;}
+.claw-provis .claw-cellicon{background:rgba(255,255,255,.28)!important;}
+.claw-final .claw-cellicon{background:rgba(255,255,255,.28)!important;}
+.claw-cellval{font-size:11px;font-weight:900;color:#fff;text-align:center;line-height:1.3;}
+/* v12.11.36 (بند 4): الإجازة كهرماني ثابت */
+.claw-vac{background:linear-gradient(to bottom,#F59E0B,#D97706)!important;}
+.claw-vac .claw-cellabel{color:#fff!important;}
+.claw-vac .claw-cellicon{background:rgba(255,255,255,.28)!important;}
+/* v12.11.36 (بند 5): متجاهلة وردي + تصاريح نيلي */
+.claw-pink{background:linear-gradient(to bottom,#F9A8D4,#DB2777)!important;}
+.claw-pink .claw-cellabel{color:#fff!important;}
+.claw-pink .claw-cellicon{background:rgba(255,255,255,.28)!important;}
+.claw-indigo{background:linear-gradient(to bottom,#818CF8,#4F46E5)!important;}
+.claw-indigo .claw-cellabel{color:#fff!important;}
+.claw-indigo .claw-cellicon{background:rgba(255,255,255,.28)!important;}
+/* v12.11.35 (بند 4): اتشالت قاعدة التمدد — 55 ثابت حتى الشاشات الصغيرة */
+.claw-grid4 .claw-cell{height:100%;justify-content:center;}
+/* v12.11.40: خلية الساعة بس 55×55 — طول ثابت لوحدها */
+.claw-grid4 .claw-cell.claw-ot55{height:55px;}
+/* v12.11.28: تلميم — حشوة 5/3 + مسافة 4 */
+/* v12.11.29 (أول): حشوة 2 فوق/تحت + مسافة 2 + اسم 10 */
+.claw-cell{background:#fff;border:none;border-radius:16px;padding:2px 0;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06);min-width:0;}
+.claw-cellicon{width:35px;height:35px;border-radius:999px;background:#E3F2F9;display:flex;align-items:center;justify-content:center;font-size:19px;}
+.claw-cellabel{font-size:10px;font-weight:800;color:#0F172A;text-align:center;}
+/* v12.11.33 (أول): الزرار مخفي بصفر مساحة بس مكانه موجود + الخلية مرجع التمركز */
+.claw-grid4 .claw-cell{position:relative;}
+.claw-cell .claw-pick{position:absolute;visibility:hidden;pointer-events:none;}
+.claw-noteview{font-size:11px;font-weight:700;color:#1D80CC;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* كارت الإشعارات */
+.claw-notices{margin-top:10px;background:#fff;border-radius:18px;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:8px;}
+.claw-notices.claw-split{flex-direction:row;overflow-x:auto;}
+.claw-notices.claw-split .claw-notice{min-width:70%;}
+.claw-notice{border-radius:14px;padding:10px;text-align:center;cursor:pointer;color:#fff;}
+.claw-warn{background:linear-gradient(to bottom right,#b45309,#f59e0b);}
+.claw-tardy{background:linear-gradient(to bottom right,#047857,#10b981);}
+.claw-permit{background:linear-gradient(to bottom right,#4338ca,#818cf8);}
+.claw-noticetitle{font-size:12px;font-weight:800;}
+.claw-noticebody{font-size:12px;font-weight:700;margin-top:2px;}
+.claw-noticesub{font-size:11px;font-weight:700;opacity:.92;margin-top:2px;}
+.claw-noticeactions{display:flex;gap:6px;justify-content:center;margin-top:6px;}
+.claw-miniprimary{background:#2563eb;color:#fff;border:none;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:800;}
+.claw-minidanger{background:#dc2626;color:#fff;border:none;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:800;}
+/* البار السفلي الجديد — عائم مرفوع فوق بار الأندرويد + خط أبيض تحته */
+.claw-bottombar{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:50;display:flex;align-items:flex-end;justify-content:space-around;background:linear-gradient(to left,#1D80CC,#2596BE 60%,#35B5A6);border-radius:20px;padding:6px 8px;box-shadow:0 10px 28px rgba(29,128,204,.40);max-width:616px;margin:0 auto;}
+.claw-nav{background:none;border:none;color:#E0F0F0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:700;cursor:pointer;min-width:0;}
+.claw-navicon{font-size:18px;}
+.claw-navlabel{font-size:9px;}
+.claw-side{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:20px;min-width:0;}
+.claw-navmain{flex-shrink:0;width:56px;height:56px;border-radius:999px;background:#fff;border:4px solid #E0F0F0;color:#1D80CC;font-size:24px;display:flex;align-items:center;justify-content:center;margin-top:-42px;box-shadow:0 6px 16px rgba(0,0,0,.25);cursor:pointer;}
+.claw-bottomspace{height:4px;}
+.claw-navmainicon{line-height:1;}
+/* v12.9.48 (بند ١٥): تصغير كل الـpop-up — الحشو 25% والخط ~15% */
+.dialog-box{padding:15px;border-radius:14px;}
+.dialog-box input,.dialog-box select,.dialog-box textarea{font-size:15px !important;}
+.dialog-box h3{font-size:15px !important;}
+/* v12.9.48 (بند ١٧): مرونة الشاشات الصغيرة */
+@media (max-width:380px){
+  .claw-home{padding:10px 10px calc(104px + env(safe-area-inset-bottom));}
+  .claw-greet{font-size:15px;}
+  /* v12.11.35 (بند 4): الخلايا 55 ثابت على كل الشاشات — من غير تمدد */
+  .claw-cellabel{font-size:10px;}
+  .claw-timeval{font-size:12px;}
+  .claw-navmain{width:52px;height:52px;font-size:22px;margin-top:-28px;}
+}
+/* بند 2: الخانة الفاضية (-) — خلفية الخانة + بوردر رمادي خفيف + شرطة رمادي */
+.d-empty{background:transparent!important;color:#94a3b8!important;border:1px dashed #cbd5e1!important;}
+.claw-cell .claw-empty{color:#94a3b8!important;border-style:dashed!important;border-color:#cbd5e1!important;background:transparent!important;}
+/* بند 3: الكارت البرتقالي + التمييز الأحمر لأسبوع التخطيط */
+/* v12.11.30 (سادس): الشريط ← البرتقالي 14 */
+.plan-card{width:100%;margin-top:14px;background:linear-gradient(to left,#ea580c,#f59e0b);border:none;border-radius:18px;padding:12px;color:#fff;box-shadow:0 8px 24px rgba(234,88,12,.30);cursor:pointer;}
+.plan-title{font-size:13px;font-weight:800;}
+.plan-sub{font-size:12px;font-weight:700;margin-top:4px;opacity:.95;}
+.plan-remain{font-size:13px;color:#b91c1c;font-weight:800;margin:8px 0;}
+.nav-disabled{opacity:.35;}
+/* تعديل ٢: الزرار العائم لمسح تعديلات الأسبوع — فوق البار السفلي */
+.plan-fab{position:fixed;left:14px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:60;width:52px;height:52px;border-radius:999px;background:linear-gradient(to bottom right,#dc2626,#f87171);border:3px solid #fff;color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(220,38,38,.45);cursor:pointer;}
+
+/* v12.11.8 — النوافذ المنبثقة أصغر 25% (كل dialog-box + كروت الأوفرلاي الوسطية — عدا البوابات والافتتاحية) */
+.dialog-box{zoom:.85}
+div.fixed.inset-0.flex.items-center.justify-center:not([class*="z-[100]"]):not([class*="z-[999]"]) > div{zoom:.85}
+/* v12.11.11 — رفع النوافذ فوق الكيبورد بمسافة ثابتة */
+.dialog-overlay{padding-bottom:var(--kb,0px);transition:padding-bottom .2s}
+div.fixed.inset-0.flex.items-center.justify-center:not([class*="z-[100]"]):not([class*="z-[999]"]){padding-bottom:var(--kb,0px);transition:padding-bottom .2s}
