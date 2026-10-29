@@ -347,6 +347,7 @@ export default function Settings() {
       save({ ...settings, [key]: res.uri })
       // v12.9.63: لو اتحفظ في المسار البديل — نقول الحقيقة ونعرض سبب الخطأ الحقيقي
       if (res && res.fallback) showToast('⚠️ حُفظ في مساحة التطبيق مش المستندات — ' + (res.error || ''))
+      if (res && res.web) showToast('✅ تم تنزيل ملف PDF')
       // التعديل ٨ (ج): حوار بعد التصدير — فتح / مشاركة / إغلاق
       setPdfAsk({ uri: res.uri, fileName: res.fileName, title: type === 'vac' ? 'ملف الإجازات' : type === 'alt' ? 'ملف الأيام البديلة' : type === 'tard' ? 'ملف التأخيرات' : 'ملف الإضافي' })
     } catch (err) { console.error(err); showToast('⚠️ فشل استخراج الـPDF: ' + (err.message || '')) }
@@ -998,7 +999,9 @@ export default function Settings() {
                 <p className="text-xs text-slate-500 mb-3 text-center font-mono" dir="ltr">{pdfAsk.fileName}</p>
                 <div className="grid grid-cols-3 gap-2">
                   <button onClick={() => { const p = pdfAsk; setPdfAsk(null); doPdfOpen(p.uri, p.title) }} className="py-2 rounded-xl bg-amber-500 text-white font-bold text-sm">📂 فتح</button>
+                  {Capacitor.isNativePlatform() && pdfAsk?.uri && (
                   <button onClick={async () => { const p = pdfAsk; setPdfAsk(null); try { await Share.share({ title: p.title, url: p.uri, dialogTitle: 'مشاركة التقرير' }) } catch {} }} className="py-2 rounded-xl bg-green-600 text-white font-bold text-sm">📤 مشاركة</button>
+                )}
                   <button onClick={() => setPdfAsk(null)} className="py-2 rounded-xl bg-slate-100 font-bold text-sm">إغلاق</button>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import reshaper from 'arabic-persian-reshaper'
+import { Capacitor } from '@capacitor/core'
 import { Filesystem, Directory } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
 import { AMIRI_BASE64 } from './fonts/amiri'
@@ -283,6 +284,11 @@ async function nextSerialName(sub, fileName) {
 // v12.9.53: حفظ مضمون على أي تليفون — mkdir مسبق + بديل المساحة الخاصة + مشاركة عند رفض Documents
 async function savePdf(doc, sub, fileName) {
   watermarkAll(doc)
+  if (!Capacitor.isNativePlatform()) {
+    const finalName = fileName.endsWith('.pdf') ? fileName : `${fileName}.pdf`
+    doc.save(finalName)
+    return { fileName: finalName, uri: null, web: true }
+  }
   const uri = doc.output('datauristring')
   const b64 = uri.slice(uri.indexOf(',') + 1)
   const finalName = await nextSerialName(sub, fileName)
@@ -308,5 +314,7 @@ async function savePdf(doc, sub, fileName) {
 
 // زرار الفتح — يوصلك للملف في الفولدر (عارض النظام عبر المشاركة)
 export async function openPdf(uri, title) {
+  if (!Capacitor.isNativePlatform()) return
+  if (!uri) return
   await Share.share({ title: title || 'فتح الملف', url: uri, dialogTitle: 'فتح بواسطة' })
 }
